@@ -15,14 +15,8 @@ var it = Lab.test;
 
 describe('in-its-right-place', function () {
 	before(function(done){
-		Fs.writeFileSync("test/files/case1/source/new.girl-star234.mp3", "new girl");
-		if (Fs.existsSync("test/files/case1/destination/New Girl/new.girl-star234.mp3")) {
-			Fs.unlinkSync("test/files/case1/destination/New Girl/new.girl-star234.mp3");
-		}
-		Fs.writeFileSync("test/files/case2/source/elementary.0230.stop-star234.mp4", "elementary");
-		if (Fs.existsSync("test/files/case2/destination/elemntary/elementary.0230.stop-star234.mp4")) {
-			Fs.unlinkSync("test/files/case2/destination/elemntary/elementary.0230.stop-star234.mp4");
-		}
+		buildCase1();
+		buildCase2();
 		done();
 	});
 
@@ -43,4 +37,17 @@ describe('in-its-right-place', function () {
         	done();
         });
     });
+
+    function buildCase1(){
+		Fs.writeFileSync("test/files/case1/source/new.girl-star234.mp3", "new girl");
+		if (Fs.existsSync("test/files/case1/destination/New Girl/new.girl-star234.mp3")) {
+			Fs.unlinkSync("test/files/case1/destination/New Girl/new.girl-star234.mp3");
+		}
+	}
+	function buildCase2(){
+		Fs.writeFileSync("test/files/case2/source/elementary.0230.stop-star234.mp4", "elementary");
+		if (Fs.existsSync("test/files/case2/destination/elemntary/elementary.0230.stop-star234.mp4")) {
+			Fs.unlinkSync("test/files/case2/destination/elemntary/elementary.0230.stop-star234.mp4");
+		}
+	}
 });
