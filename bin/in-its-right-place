@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+var Fs = require('fs');
+var InItsRightPlace = require('../lib');
+
+var usage = "-----\n usage: in-its-right-place <source dir> <destination dir> \n-----"
+
+if(process.argv.length != 4) {
+	console.error("number of arguments is incorrect");
+	return console.error(usage);
+}
+var source = process.argv[2];
+var destination = process.argv[3];
+
+if (Fs.existsSync(source) === false) {
+	console.error("source dir does not exist");
+	return console.error(usage);
+}
+
+if (Fs.existsSync(destination) === false) {
+	console.error("destination dir does not exist");
+	return console.error(usage);
+}
+
+var rightPlace = new InItsRightPlace(source, destination);
+rightPlace.on('rightPlace', function(what){
+	console.log(what);
+});
+    

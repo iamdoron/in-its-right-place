@@ -6,6 +6,9 @@
   "scripts": {
     "test": "make test"
   },
+  "bin": {
+    "in-its-right-place": "./bin/in-its-right-place"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/iamdoron/in-its-right-place.git"
