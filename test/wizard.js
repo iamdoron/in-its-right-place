@@ -27,5 +27,10 @@ describe('wizard', function () {
         done();
     });
 
+    it('should choose "bla bla" ', function (done) {
+        var res = Wizard.findBestMatch("bla_bla.e20s02.blablabla-ad", ["bla", "bla bLa" , "New Girl", "new", "new girl song", "dasdasd"]);
+        res.should.be.eql("bla bLa");
+        done();
+    });
 
 });
