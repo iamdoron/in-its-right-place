@@ -15,9 +15,17 @@ var it = Lab.test;
 
 describe('wizard', function () {
 
-    it('should choose "new girl" when  ', function (done) {
+    it('should choose "new girl" ', function (done) {
     	var res = Wizard.findBestMatch("new.girl.e20s02.blablabla-ad", ["New Girl", "new", "new girl song", "dasdasd"]);
         res.should.be.eql("New Girl");
         done();
     });
+
+    it('should choose nothing when there is no apperent match ', function (done) {
+        var res = Wizard.findBestMatch("old.boy.e20s02.blablabla-ad", ["New Girl", "new", "new girl song", "dasdasd"]);
+        expect(res).to.be.undefined;
+        done();
+    });
+
+
 });
