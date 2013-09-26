@@ -30,6 +30,7 @@
     "complexity-report": "~0.10.5"
   },
   "dependencies": {
-    "chokidar": "~0.6.3"
+    "chokidar": "~0.6.3",
+    "async": "~0.2.9"
   }
 }
