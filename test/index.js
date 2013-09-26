@@ -25,6 +25,7 @@ describe('in-its-right-place', function () {
         rightPlace.on('rightPlace', function(what){
         	what.src.should.eql(Path.resolve(Path.resolve("test/files/case1/source/new.girl-star234.mp3")));
         	what.dst.should.eql(Path.resolve(Path.resolve("test/files/case1/destination/New Girl/new.girl-star234.mp3")));
+        	Fs.readFileSync("test/files/case1/destination/New Girl/new.girl-star234.mp3").toString().should.eql("new girl");
         	done();
         });
     });
@@ -34,6 +35,7 @@ describe('in-its-right-place', function () {
         rightPlace.on('rightPlace', function(what){
         	what.src.should.eql(Path.resolve(Path.resolve("test/files/case2/source/elementary.0230.stop-star234.mp4")));
         	what.dst.should.eql(Path.resolve(Path.resolve("test/files/case2/destination/elementary/elementary.0230.stop-star234.mp4")));
+        	Fs.readFileSync("test/files/case2/destination/elementary/elementary.0230.stop-star234.mp4").toString().should.eql("elementary");
         	done();
         });
     });
