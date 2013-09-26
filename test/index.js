@@ -26,7 +26,7 @@ describe('in-its-right-place', function () {
 		done();
 	});
 
-    it('should new.girl file already in the src folder to the correct dst folder', function (done) {
+    it('should put new.girl in the correct dst folder (when file was already there)', function (done) {
     	var rightPlace = new InItsRightPlace("test/files/case1/source", "test/files/case1/destination");
         rightPlace.on('rightPlace', function(what){
         	what.src.should.eql(Path.resolve(Path.resolve("test/files/case1/source/new.girl-star234.mp3")));
@@ -35,7 +35,7 @@ describe('in-its-right-place', function () {
         });
     });
 
-    it('should elementary file already in the src folder to the correct dst folder', function (done) {
+    it('should put elementary in the correct dst folder (when file was already there)', function (done) {
     	var rightPlace = new InItsRightPlace("test/files/case2/source", "test/files/case2/destination");
         rightPlace.on('rightPlace', function(what){
         	what.src.should.eql(Path.resolve(Path.resolve("test/files/case2/source/elementary.0230.stop-star234.mp4")));
