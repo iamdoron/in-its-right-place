@@ -55,7 +55,7 @@ describe('in-its-right-place', function () {
             what.src.should.eql(Path.resolve(Path.resolve("test/files/case3/source/elementary.0230.stop-star234.mp4")));
             what.dst.should.eql(Path.resolve(Path.resolve("test/files/case3/destination/elementary/elementary.0230.stop-star234.mp4")));
             Fs.readFileSync("test/files/case3/destination/elementary/elementary.0230.stop-star234.mp4").toString().should.eql("elementary");
-            rightPlace.on('rightPlace', function(what){
+            rightPlace.once('rightPlace', function(what){
                 what.src.should.eql(Path.resolve(Path.resolve("test/files/case3/source/new.girl-star234.mp3")));
                 what.dst.should.eql(Path.resolve(Path.resolve("test/files/case3/destination/New Girl/new.girl-star234.mp3")));
                 Fs.readFileSync("test/files/case3/destination/New Girl/new.girl-star234.mp3").toString().should.eql("new girl");
