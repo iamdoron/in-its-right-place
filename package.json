@@ -1,6 +1,6 @@
 {
   "name": "in-its-right-place",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "magically puts files in their right place.",
   "main": "lib/index.js",
   "scripts": {
