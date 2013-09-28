@@ -28,10 +28,10 @@
     "chai": "~1.8.0",
     "lab": "~1.1.0",
     "complexity-report": "~0.10.5",
-    "proxyquire": "~0.5.1"
+    "proxyquire": "~0.5.1",
+    "rimraf": "~2.2.2"
   },
   "dependencies": {
-    "async": "~0.2.9",
-    "rimraf": "~2.2.2"
+    "async": "~0.2.9"
   }
 }
