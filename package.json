@@ -27,10 +27,11 @@
   "devDependencies": {
     "chai": "~1.8.0",
     "lab": "~1.1.0",
-    "complexity-report": "~0.10.5"
+    "complexity-report": "~0.10.5",
+    "proxyquire": "~0.5.1"
   },
   "dependencies": {
-    "chokidar": "~0.6.3",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "rimraf": "~2.2.2"
   }
 }

@@ -2,6 +2,8 @@ var InItsRightPlace = require('../lib');
 var Lab = require('lab');
 var Path = require('path');
 var Fs = require('fs');
+var Rimraf = require('rimraf');
+var Proxyquire = require('proxyquire');
 var Chai = require('chai');
 Chai.should();
 
@@ -48,7 +50,7 @@ describe('in-its-right-place', function () {
         setTimeout(function(){
             Fs.writeFileSync("test/files/case3/source/elementary.0230.stop-star234.mp4", "elementary");
 
-        }, 400);
+        }, 100);
         rightPlace.once('rightPlace', function(what){
             what.src.should.eql(Path.resolve(Path.resolve("test/files/case3/source/elementary.0230.stop-star234.mp4")));
             what.dst.should.eql(Path.resolve(Path.resolve("test/files/case3/destination/elementary/elementary.0230.stop-star234.mp4")));
@@ -62,8 +64,62 @@ describe('in-its-right-place', function () {
 
             setTimeout(function(){
                 Fs.writeFileSync("test/files/case3/source/new.girl-star234.mp3", "new girl");
-            }, 1000);
+            }, 100);
         });
+    });
+
+    it('should put elementary to the correct dst folder after there was no destination folder the time of the arival', function (done) {
+        Fs.mkdirSync("test/files/case4");
+        Fs.mkdirSync("test/files/case4/source");
+        Fs.mkdirSync("test/files/case4/destination");
+
+        var rightPlace = new InItsRightPlace("test/files/case4/source", "test/files/case4/destination");
+        setTimeout(function(){
+            Fs.writeFileSync("test/files/case4/source/elementary.0230.stop-star234.mp4", "elementary");
+            setTimeout(function(){
+                Fs.mkdirSync("test/files/case4/destination/elementary");
+            }, 100);
+        }, 100);
+        rightPlace.once('rightPlace', function(what){
+            what.src.should.eql(Path.resolve(Path.resolve("test/files/case4/source/elementary.0230.stop-star234.mp4")));
+            what.dst.should.eql(Path.resolve(Path.resolve("test/files/case4/destination/elementary/elementary.0230.stop-star234.mp4")));
+            Fs.readFileSync("test/files/case4/destination/elementary/elementary.0230.stop-star234.mp4").toString().should.eql("elementary");
+            done()
+        });
+    });
+
+     it('should emit only once, event if there were two events of the same file name', function (done) {
+        Fs.mkdirSync("test/files/case5");
+        Fs.mkdirSync("test/files/case5/source");
+        Fs.mkdirSync("test/files/case5/destination");
+        Fs.mkdirSync("test/files/case5/destination/elementary");
+
+        var fsStub = {exists: Fs.exists, readdir: Fs.readdir, watch: function(src, onFile){
+            if (src === "test/files/case5/source"){
+                setTimeout(function(){
+                    onFile("rename", "elementary.0230.stop-star234.mp4", "1");            
+                    onFile("rename", "elementary.0230.stop-star234.mp4", "2");          
+                }, 200);  
+            }
+        }};
+        var InItsRightPlace = Proxyquire('../lib', {fs: fsStub});
+
+        var rightPlace = new InItsRightPlace("test/files/case5/source", "test/files/case5/destination");
+        setTimeout(function(){
+            Fs.writeFileSync("test/files/case5/source/elementary.0230.stop-star234.mp4", "elementary");
+        }, 150);
+        rightPlace.on('rightPlace', function(what){
+            what.src.should.eql(Path.resolve(Path.resolve("test/files/case5/source/elementary.0230.stop-star234.mp4")));
+            what.dst.should.eql(Path.resolve(Path.resolve("test/files/case5/destination/elementary/elementary.0230.stop-star234.mp4")));
+            Fs.readFileSync("test/files/case5/destination/elementary/elementary.0230.stop-star234.mp4").toString().should.eql("elementary");
+            done()
+        });
+    });
+    
+    after(function(done){
+        Rimraf.sync('test/files/case4');
+        Rimraf.sync('test/files/case5');
+        done();
     });
 
     function buildCase1(){
