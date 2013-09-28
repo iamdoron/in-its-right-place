@@ -17,6 +17,7 @@ var it = Lab.test;
 
 describe('in-its-right-place', function () {
 	before(function(done){
+        cleanFiles();
 		buildCase1();
         buildCase2();
 		buildCase3();
@@ -88,7 +89,7 @@ describe('in-its-right-place', function () {
         });
     });
 
-     it('should emit only once, event if there were two events of the same file name', function (done) {
+    it('should emit only once, even if there were two events of the same file name', function (done) {
         Fs.mkdirSync("test/files/case5");
         Fs.mkdirSync("test/files/case5/source");
         Fs.mkdirSync("test/files/case5/destination");
@@ -116,12 +117,72 @@ describe('in-its-right-place', function () {
         });
     });
     
-    after(function(done){
-        Rimraf.sync('test/files/case4');
-        Rimraf.sync('test/files/case5');
-        done();
+    it('should emit only once, even if there were two events of the same file name, and in both events time, the file was indeed there', function (done) {
+        Fs.mkdirSync("test/files/case6");
+        Fs.mkdirSync("test/files/case6/source");
+        Fs.mkdirSync("test/files/case6/destination");
+        Fs.mkdirSync("test/files/case6/destination/elementary");
+        var onWatchSrcFunction;
+        var renameCounter = 0;
+        var fsStub = {
+            stat: function(path, callback){callback(undefined, {isDirectory: function(){return true;}})},
+            exists: function(path,callback){callback(true)}, 
+            readdir: function(path, callback){
+                if (path === "test/files/case6/source") {
+                    callback(undefined, []);
+                }
+                else{
+                    callback(undefined, ["elementary"]);
+                }
+            }, 
+            rename: function(from, to, callback){
+                ++renameCounter;
+                if (renameCounter == 1)
+                {
+                    Fs.rename(from, to, callback);
+                }
+                else {
+                    callback(new Error());
+                }
+
+            }, 
+            watch: function(src, onFile){
+                if (src === "test/files/case6/source"){
+                    onWatchSrcFunction = onFile;
+                    setTimeout(function(){
+                        onFile("rename", "elementary.0230.stop-star234.mp4", "1");         
+                    }, 100);  
+                }
+        }};
+        
+        var InItsRightPlace = Proxyquire('../lib', {fs: fsStub});
+
+        var rightPlace = new InItsRightPlace("test/files/case6/source", "test/files/case6/destination");
+        setTimeout(function(){
+            Fs.writeFileSync("test/files/case6/source/elementary.0230.stop-star234.mp4", "elementary");
+        }, 50);
+        var numberOfTimesRightPlacedWasEmitted = 0;
+        rightPlace.on('rightPlace', function(what){
+            ++numberOfTimesRightPlacedWasEmitted;
+            numberOfTimesRightPlacedWasEmitted.should.eql(1);
+            onWatchSrcFunction("rename", "elementary.0230.stop-star234.mp4", "2");          
+
+            what.src.should.eql(Path.resolve(Path.resolve("test/files/case6/source/elementary.0230.stop-star234.mp4")));
+            what.dst.should.eql(Path.resolve(Path.resolve("test/files/case6/destination/elementary/elementary.0230.stop-star234.mp4")));
+            Fs.readFileSync("test/files/case6/destination/elementary/elementary.0230.stop-star234.mp4").toString().should.eql("elementary");
+            done()
+        });
     });
 
+    after(function(done){
+        cleanFiles();
+        done();
+    });
+    function cleanFiles(){
+        Rimraf.sync('test/files/case4');
+        Rimraf.sync('test/files/case5');
+        Rimraf.sync('test/files/case6');
+    }
     function buildCase1(){
 		Fs.writeFileSync("test/files/case1/source/new.girl-star234.mp3", "new girl");
 		if (Fs.existsSync("test/files/case1/destination/New Girl/new.girl-star234.mp3")) {
