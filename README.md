@@ -27,3 +27,5 @@ $ in-its-right-place <source-dir> <destination-dir>
 $ npm install && make test
 ```
 
+## Other Notes
+I tested it mostly on mac, but it passes travis on a linux machine. I still haven't tested in on a winodws machine.
